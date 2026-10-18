@@ -26,18 +26,24 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
         database: configService.get<string>('DB_NAME'),
         autoLoadEntities: true,
         synchronize: false,
+        logging: process.env.DB_LOGGING === "true",
+        logger: 'advanced-console',
       }),
     }),
     AuthModule,
     TurnosModule,
-    ObserveModule.forRoot({
-      appKey: 'YOUR_APP_KEY',
-      appSecret: 'YOUR_APP_SECRET',
-      serviceId: 'backgw',
+    ObserveModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        appKey: configService.get<string>('OBSERVE_APP_KEY') || '',
+        appSecret: configService.get<string>('OBSERVE_APP_SECRET') || '',
+        serviceId: configService.get<string>('OBSERVE_SERVICE_ID') || 'backgw',
+      }),
     }),
   ],
   controllers: [],
   providers: [],
   exports: [ObserveModule],
 })
-export class AppModule {}
+export class AppModule { }
