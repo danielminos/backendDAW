@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Param, Post, Put, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, ParseIntPipe, Get, Param, Post, Put, Req, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOkResponse } from "@nestjs/swagger";
-import { CreateTurnoDTO } from "../dtos/input/create-turno.dto.js";
+import { CreateTurnoPacienteDTO } from "../dtos/input/create-turno-paciente.dto.js";
 import { ListTurnosPacienteDTO } from "../dtos/output/list-turnospaciente.dto.js";
 import { TurnosServices } from "../services/turnos.services.js";
 import { Reserva } from "../entities/reserva.entity.js";
@@ -19,11 +19,11 @@ export class PacientesController {
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(RolesUsuarios.PACIENTE)
     @Post('/turnos')
-    async crearTurno(@Body() req: any, @Body() dto: CreateTurnoDTO): Promise<{ id: number }> {
-        //idPaciente sea el del usuario logueado en el token JWT
-        dto.idPaciente = req.user.id;
+    async crearTurno(@Req() req: any, @Body() dto: CreateTurnoPacienteDTO): Promise<{ id: number }> {
+        //idPaciente sale del token JWT que esté logueado
+        const idPaciente = req.user.id;
 
-        const { id } = await this.service.crearReserva(dto)
+        const { id } = await this.service.crearReserva({ ...dto, idPaciente });
         return { id };
     }
 
@@ -50,8 +50,7 @@ export class PacientesController {
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(RolesUsuarios.PACIENTE)
     @Put(':id/cancelar')
-    async cancelarTurno(@Param('id') id: number): Promise<void> {
-        await this.service.cancelarReserva(id);
-        return;
+    async cancelarTurno(@Param('id', ParseIntPipe) id: number, @Req() req: any): Promise<void> {
+        await this.service.cancelarReserva(id, req.user);
     }
 }
