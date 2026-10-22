@@ -1,5 +1,6 @@
 import { Body, Controller, ParseIntPipe, Get, Param, Post, Put, Req, UseGuards } from "@nestjs/common";
-import { ApiBearerAuth, ApiOkResponse } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from "@nestjs/swagger";
+import { IdResponseDTO } from "../dtos/output/id-response.dto.js";
 import { CreateTurnoPacienteDTO } from "../dtos/input/create-turno-paciente.dto.js";
 import { ListTurnosPacienteDTO } from "../dtos/output/list-turnospaciente.dto.js";
 import { TurnosServices } from "../services/turnos.services.js";
@@ -18,8 +19,9 @@ export class PacientesController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(RolesUsuarios.PACIENTE)
+    @ApiCreatedResponse({ type: IdResponseDTO })
     @Post('/turnos')
-    async crearTurno(@Req() req: any, @Body() dto: CreateTurnoPacienteDTO): Promise<{ id: number }> {
+    async crearTurno(@Req() req: any, @Body() dto: CreateTurnoPacienteDTO): Promise<IdResponseDTO> {
         //idPaciente sale del token JWT que esté logueado
         const idPaciente = req.user.id;
 
@@ -40,6 +42,7 @@ export class PacientesController {
             idTurno: r.id,
             fechaHora: r.fechaHora,
             estado: r.estado,
+            valorConsulta: r.valorConsulta,
             apellidoMedico: r.medico?.usuario?.apellidos ?? '',
             nombreMedico: r.medico?.usuario?.nombres ?? ''
         }))
