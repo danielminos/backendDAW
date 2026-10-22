@@ -1,7 +1,8 @@
 import { Body, Controller, Get, ParseIntPipe, Req, NotImplementedException, Param, Post, Put, UseGuards } from "@nestjs/common";
-import { ApiBearerAuth, ApiOkResponse } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from "@nestjs/swagger";
+import { IdResponseDTO } from "../dtos/output/id-response.dto.js";
 import { CreateTurnoDTO } from "../dtos/input/create-turno.dto.js";
-import { ListPacientesMedicoDTO } from "../dtos/output/list-pacientesmedico.dto.js";
+import { ListTurnosAdminDTO } from "../dtos/output/list-turnosadmin.dto.js";
 import { UpdateValorConsultaDTO } from "../dtos/input/update-valor-consulta.dto.js";
 import { AuthGuard } from "../../auth/guards/auth.guard.js";
 import { TurnosServices } from "../services/turnos.services.js";
@@ -22,6 +23,7 @@ export class AdministradorController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(RolesUsuarios.ADMINISTRADOR)
+    @ApiCreatedResponse({ type: IdResponseDTO })
     @Post('/turnos')
     async reservarTurno(@Body() dto: CreateTurnoDTO): Promise<{ id: number }> {
         const { id } = await this.turnosService.crearReserva(dto);
@@ -41,17 +43,23 @@ export class AdministradorController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(RolesUsuarios.ADMINISTRADOR)
-    @ApiOkResponse({ type: ListPacientesMedicoDTO, isArray: true })
+    @ApiOkResponse({ type: ListTurnosAdminDTO, isArray: true })
     @Get('/turnos')
-    async listarTurnos(): Promise<any[]> {
+    async listarturnos(): Promise<ListTurnosAdminDTO[]> {
         const reservas = await this.turnosService.listarTodasLasReservas();
+        
         return reservas.map((r: Reserva) => ({
             idTurno: r.id,
-            idPaciente: r.idPaciente,
-            idMedico: r.idMedico,
             fechaHora: r.fechaHora,
             estado: r.estado,
-            valorConsulta: r.valorConsulta
+            valorConsulta: r.valorConsulta,
+            idPaciente: r.idPaciente,
+            documentoPaciente: r.paciente?.documento ?? '',
+            apellidoPaciente: r.paciente?.apellidos ?? '',
+            nombrePaciente: r.paciente?.nombres ?? '',
+            idMedico: r.idMedico,
+            apellidoMedico: r.medico?.usuario?.apellidos ?? '',
+            nombreMedico: r.medico?.usuario?.nombres ?? ''
         }))
     }
 
