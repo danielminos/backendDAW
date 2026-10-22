@@ -1,4 +1,4 @@
-import { Body, Controller, Get, NotImplementedException, Param, Post, Put, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, ParseIntPipe, Req, NotImplementedException, Param, Post, Put, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOkResponse } from "@nestjs/swagger";
 import { CreateTurnoDTO } from "../dtos/input/create-turno.dto.js";
 import { ListPacientesMedicoDTO } from "../dtos/output/list-pacientesmedico.dto.js";
@@ -33,9 +33,8 @@ export class AdministradorController {
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(RolesUsuarios.ADMINISTRADOR)
     @Put(':id/cancelar')
-    async cancelarTurno(@Param('id') id: number): Promise<void> {
-        await this.turnosService.cancelarReserva(id);
-        return;
+    async cancelarTurno(@Param('id', ParseIntPipe) id: number, @Req() req: any): Promise<void> {
+        await this.turnosService.cancelarReserva(id, req.user);
     }
 
     // Listar todos los turnos

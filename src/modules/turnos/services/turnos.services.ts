@@ -1,4 +1,5 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import { RolesUsuarios } from "../../auth/enums/rolesusuarios.enum.js";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Reserva } from "../entities/reserva.entity.js";
 import { Medico } from "../entities/medico.entity.js";
@@ -67,20 +68,37 @@ export class TurnosServices {
 
     }
 
-    // Cancelar Reserva
-    async cancelarReserva(id: number): Promise<{ id: number }> {
+    // Cancelar Reserva: Pacientes (Sus propios turnos y hasta un día antes), Administradores (Cualquier turno)
+    async cancelarReserva(id: number, usuario: { id: number, rol: RolesUsuarios }): Promise<void> {
 
         const reserva: Reserva | null = await this.reservaRepository.findOneBy({ id });
 
-        if (!reserva) throw new BadRequestException("Reserva no encontrada");
+        if (!reserva) throw new NotFoundException("Reserva no encontrada");
 
-        if (reserva.estado !== EstadosReservas.ACTIVO) throw new BadRequestException("Reserva no encontrada")
+        if (usuario.rol === RolesUsuarios.PACIENTE && reserva.idPaciente !== usuario.id) {
+            throw new ForbiddenException("No podés cancelar un turno que no es tuyo.");
+        }
 
-        reserva.estado = EstadosReservas.CANCELADO
+        if (reserva.estado !== EstadosReservas.ACTIVO) {
+            throw new BadRequestException("El turno no está activo y no se puede cancelar.");
+        }
 
+        const ahora = new Date();
+
+        if (usuario.rol === RolesUsuarios.PACIENTE) {
+            // Las fechas se llevan a las 00:00 para ignorar la hora
+            const hoy = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+            const diaConsulta = new Date(reserva.fechaHora.getFullYear(), reserva.fechaHora.getMonth(), reserva.fechaHora.getDate());
+
+            if (hoy >= diaConsulta) {
+                throw new BadRequestException("No podés cancelar un turno el mismo día o después de la fecha del turno.");
+            }
+        } else if (ahora >= reserva.fechaHora) {
+            throw new BadRequestException("No podés cancelar un turno pasado.");
+        }
+
+        reserva.estado = EstadosReservas.CANCELADO;
         await this.reservaRepository.save(reserva);
-
-        return { id: reserva.id };
     }
 
     // Listar reservas por paciente
