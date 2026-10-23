@@ -27,8 +27,18 @@ import { TurnosModule } from './modules/turnos/turnos.module.js';
     }),
     AuthModule,
     TurnosModule,
+    // ObserveModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   inject: [ConfigService],
+    //   useFactory: (configService: ConfigService) => ({
+    //     appKey: configService.get<string>('OBSERVE_APP_KEY') || '',
+    //     appSecret: configService.get<string>('OBSERVE_APP_SECRET') || '',
+    //     serviceId: configService.get<string>('OBSERVE_SERVICE_ID') || 'backgw',
+    //   }),
+    // }),
   ],
   controllers: [],
   providers: [],
+  exports: [],
 })
 export class AppModule { }
