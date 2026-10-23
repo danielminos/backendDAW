@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Query, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, Query, Req, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOkResponse, ApiQuery } from "@nestjs/swagger";
 import { ListPacientesMedicoDTO } from "../dtos/output/list-pacientesmedico.dto.js";
 import { UpdateTurnoDTO } from "../dtos/input/update-turno.dto.js";
@@ -32,14 +32,16 @@ export class MedicosController {
         const medico = await this.service.obtenerMedicoPorIdUsuario(idUsuarioLogueado);
 
         const fechaFiltro = fecha ? new Date(fecha) : undefined;
-
-        const reservas = await this.service.listarReservasMedico(medico.id, fechaFiltro);
+        
+        // La fecha se pasa como string
+        const reservas = await this.service.listarReservasMedico(medico.id, fecha);
 
         return reservas.map((r: Reserva) => ({
+            idTurno: r.id,
             idPaciente: r.idPaciente,
             documento: r.paciente.documento ?? '',
-            nombre: r.paciente.nombre ?? '',
-            apellido: r.paciente.apellido ?? '',
+            nombre: r.paciente.nombres ?? '',
+            apellido: r.paciente.apellidos ?? '',
             fechaHora: r.fechaHora ?? '',
             estado: r.estado ?? ''
         }));
@@ -50,8 +52,13 @@ export class MedicosController {
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(RolesUsuarios.MEDICO)
     @Patch(':id/estado')
-    async cambiarEstadoTurno(@Param('id') id: number, @Body() dto: UpdateTurnoDTO): Promise<void> {
-        await this.service.cambiarEstadoReserva(id, dto.estado);
-        return;
+    
+    async cambiarEstadoTurno(
+        @Param('id', ParseIntPipe) id: number, 
+        @Body() dto: UpdateTurnoDTO,
+        @Req() req: any
+    ): Promise<void> {
+        //El id del médico se obtiene del usuario logueado
+        await this.service.cambiarEstadoReserva(id, dto.estado, req.user.id);
     }
 }

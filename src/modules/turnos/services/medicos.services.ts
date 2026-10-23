@@ -1,8 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Reserva } from "../entities/reserva.entity.js";
 import { Medico } from "../entities/medico.entity.js";
-import { Repository } from "typeorm";
+import { Between, Not, Repository } from "typeorm";
 import { EstadosReservas } from "../enums/estadosreservas.enum.js";
 
 @Injectable()
@@ -37,25 +37,41 @@ export class MedicosServices {
     }
 
     // Listar reservas por medico (con fecha opcional)
-    async listarReservasMedico(idMedico: number, fecha?: Date): Promise<Reserva[]> {
+    async listarReservasMedico(idMedico: number, fecha?: string): Promise<Reserva[]> {
         const where: any = { idMedico };
+        // los turnos cancelados no se muestran en la agenda del medico
+        where.estado = Not(EstadosReservas.CANCELADO);
+        
         if (fecha) {
-            where.fechaHora = fecha;
+            const [anio, mes, dia] = fecha.split('-').map(Number);
+            const inicio = new Date(anio, mes - 1, dia, 0, 0, 0);
+            const fin = new Date(anio, mes - 1, dia, 23, 59, 59, 999);
+            where.fechaHora = Between(inicio, fin);            
         }
+        
         return await this.repository.find({
             where,
-            relations: { paciente: true }
+            relations: { paciente: true },
+            order: { fechaHora: 'ASC' }
         });
     }
 
     // Cambiar estado de la reserva
-    async cambiarEstadoReserva(id: number, estado: EstadosReservas): Promise<void> {
-        const reserva = await this.repository.findOneBy({ id });
+    async cambiarEstadoReserva(idReserva: number, estado: EstadosReservas, idUsuario: number): Promise<void> {
+        const medico = await this.obtenerMedicoPorIdUsuario(idUsuario);
 
+        const reserva = await this.repository.findOneBy({ id: idReserva });
         if (!reserva) throw new NotFoundException("Reserva no encontrada");
 
-        reserva.estado = estado;
+        if (reserva.idMedico !== medico.id) {
+            throw new ForbiddenException("No podés modificar el turno de otro médico.");
+        }
 
+        if (reserva.estado !== EstadosReservas.ACTIVO) {
+            throw new BadRequestException("El turno no está activo y no se puede modificar.");
+        }
+
+        reserva.estado = estado;
         await this.repository.save(reserva);
     }
 
