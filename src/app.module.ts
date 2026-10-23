@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { TurnosModule } from './modules/turnos/turnos.module.js';
 
-
 @Module({
   imports: [
     ConfigModule.forRoot({
