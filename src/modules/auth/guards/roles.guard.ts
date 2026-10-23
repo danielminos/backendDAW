@@ -1,32 +1,29 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
-import { Reflector } from "@nestjs/core";
-import { ROLES_KEY } from "../decorators/roles.decorator.js";
-import { RolesUsuarios } from "../enums/rolesusuarios.enum.js";
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
     constructor(private reflector: Reflector) { }
 
     canActivate(context: ExecutionContext): boolean {
-        // Obtener los roles definidos en el decorador @Roles
-        const requiredRoles = this.reflector.getAllAndOverride<RolesUsuarios[]>(ROLES_KEY, [
+        const requiredRoles = this.reflector.getAllAndOverride<string[]>('roles', [
             context.getHandler(),
             context.getClass(),
         ]);
+
         if (!requiredRoles) {
             return true;
         }
 
-        //const request = context.switchToHttp().getRequest();
-        //const user = request.user;
-        const { user } = context.switchToHttp().getRequest();
+        const request = context.switchToHttp().getRequest();
+        const user = request.user; // <--- Aquí es donde llega undefined si no pasó por una estrategia JWT previa
 
-        const hasRole = requiredRoles.some((role) => user.role === role);
-
-        if (!hasRole) {
-            throw new UnauthorizedException('No tienes permiso para acceder a este recurso');
+        // Validación defensiva para evitar que explote si el usuario no está autenticado
+        if (!user) {
+            return false;
         }
 
-        return true;
+        // Asegúrate de que coincida con el nombre de la propiedad en tu token (ej: 'role' o 'rol')
+        return requiredRoles.some((role) => user.role === role || user.rol === role);
     }
 }
