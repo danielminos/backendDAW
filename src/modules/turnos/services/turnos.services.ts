@@ -6,12 +6,14 @@ import { Medico } from "../entities/medico.entity.js";
 import { Repository } from "typeorm";
 import { CreateTurnoDTO } from "../dtos/input/create-turno.dto.js";
 import { EstadosReservas } from "../enums/estadosreservas.enum.js";
+import { UsuariosService } from "../../auth/services/usuarios.services.js";
 
 @Injectable()
 export class TurnosServices {
 
     constructor(@InjectRepository(Reserva) private readonly reservaRepository: Repository<Reserva>,
-        @InjectRepository(Medico) private readonly medicoRepository: Repository<Medico>) { }
+        @InjectRepository(Medico) private readonly medicoRepository: Repository<Medico>,
+        private readonly usuariosService: UsuariosService) { }
 
     // Crear reserva
     async crearReserva(dto: CreateTurnoDTO): Promise<{ id: number }> {
@@ -34,16 +36,22 @@ export class TurnosServices {
             throw new BadRequestException("El horario de atención es de 8 a 16");
         }
 
+        // Verificar que el paciente exista, esté activo y sea rol paciente
+        const paciente = await this.usuariosService.buscarPacienteActivoPorId(dto.idPaciente);
+        if (!paciente) {
+            throw new NotFoundException("Paciente no encontrado");
+        }
+
         // Verificar que el médico exista y obtener su valor de consulta actual
-        const medico = await this.medicoRepository.findOneBy({ id: dto.idProfesional });
+        const medico = await this.medicoRepository.findOneBy({ id: dto.idMedico });
         if (!medico) {
-            throw new BadRequestException("Médico no encontrado");
+            throw new NotFoundException("Médico no encontrado");
         }
 
         // Verificar que el horario no esté ocupado para ése médico
         const turnoOcupado = await this.reservaRepository.findOne({
             where: {
-                idMedico: dto.idProfesional,
+                idMedico: dto.idMedico,
                 fechaHora: fechaReserva,
                 estado: EstadosReservas.ACTIVO
             }
@@ -56,7 +64,7 @@ export class TurnosServices {
         // Crear reserva
         const nuevaReserva = this.reservaRepository.create({
             idPaciente: dto.idPaciente,
-            idMedico: dto.idProfesional,
+            idMedico: dto.idMedico,
             fechaHora: fechaReserva,
             estado: EstadosReservas.ACTIVO,
             valorConsulta: medico.valorConsulta
