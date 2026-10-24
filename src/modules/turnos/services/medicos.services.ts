@@ -4,12 +4,22 @@ import { Reserva } from "../entities/reserva.entity.js";
 import { Medico } from "../entities/medico.entity.js";
 import { Between, Not, Repository } from "typeorm";
 import { EstadosReservas } from "../enums/estadosreservas.enum.js";
+import { EstadosUsuarios } from "../../auth/enums/estadosusuarios.enum.js";
 
 @Injectable()
 export class MedicosServices {
 
     constructor(@InjectRepository(Reserva) private readonly repository: Repository<Reserva>,
         @InjectRepository(Medico) private readonly medicoRepository: Repository<Medico>) { }
+
+    // Listar médicos activos, ordenados por apellido
+    async listarMedicos(): Promise<Medico[]> {
+        return await this.medicoRepository.find({
+            where : { usuario: { estado: EstadosUsuarios.ACTIVO } },
+            relations: { usuario: true },
+            order: { usuario: { apellidos: 'ASC' } }
+        });
+    }
 
     // Modificar valor de consulta
     async modificarValorConsulta(idMedico: number, valorConsulta: number): Promise<{ id: number }> {
@@ -45,6 +55,12 @@ export class MedicosServices {
         if (fecha) {
             const [anio, mes, dia] = fecha.split('-').map(Number);
             const inicio = new Date(anio, mes - 1, dia, 0, 0, 0);
+            
+            //si el dia no existe js lo corre a otro mes
+            if (inicio.getMonth() !== mes - 1) {
+                throw new BadRequestException("La fecha no es válida")
+            }
+            
             const fin = new Date(anio, mes - 1, dia, 23, 59, 59, 999);
             where.fechaHora = Between(inicio, fin);            
         }

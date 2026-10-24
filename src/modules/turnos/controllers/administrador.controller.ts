@@ -11,13 +11,34 @@ import { Reserva } from "../entities/reserva.entity.js";
 import { RolesGuard } from "../../auth/guards/roles.guard.js";
 import { Roles } from "../../auth/decorators/roles.decorator.js";
 import { RolesUsuarios } from "../../auth/enums/rolesusuarios.enum.js";
+import { Usuario } from "../../auth/entities/usuario.entity.js";
+import { UsuariosService } from "../../auth/services/usuarios.services.js";
+import { ListPacientesDTO } from "../dtos/output/list-pacientes.dto.js";
 
 @Controller('/administrador')
 export class AdministradorController {
 
     constructor(private readonly turnosService: TurnosServices,
-        private readonly medicoService: MedicosServices
+        private readonly medicoService: MedicosServices,
+        private readonly usuariosService: UsuariosService
     ) { }
+
+    // Listar pacientes activos
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles(RolesUsuarios.ADMINISTRADOR)
+    @ApiOkResponse({ type: ListPacientesDTO, isArray: true })
+    @Get('/pacientes')
+    async listarPacientes(): Promise<ListPacientesDTO[]> {
+        const pacientes = await this.usuariosService.listarPacientesActivos();
+
+        return pacientes.map((p: Usuario) => ({
+            idPaciente: p.id,
+            documento: p.documento,
+            apellido: p.apellidos,
+            nombre: p.nombres,
+        }));
+    }
 
     // Reservar turno
     @ApiBearerAuth()

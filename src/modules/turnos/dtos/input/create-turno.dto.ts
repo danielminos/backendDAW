@@ -10,8 +10,8 @@ export class CreateTurnoDTO {
 
     @ApiProperty()
     @IsNumber()
-    @IsNotEmpty({ message: 'El idProfesional es requerido' })
-    idProfesional: number;
+    @IsNotEmpty({ message: 'El idMedico es requerido' })
+    idMedico: number;
 
     @ApiProperty()
     @Type(() => Date)
