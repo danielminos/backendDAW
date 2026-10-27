@@ -118,6 +118,9 @@ export class TurnosServices {
                     usuario: true,
                 },
             },
+            order: {
+                fechaHora: 'DESC'
+            },
         });
         return reservas;
     }
