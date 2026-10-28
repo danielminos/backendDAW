@@ -25,15 +25,19 @@ export class TurnosServices {
         treintaDiasDespues.setDate(ahora.getDate() + 30);
 
         if (fechaReserva > treintaDiasDespues || fechaReserva < ahora) {
-            throw new BadRequestException("Los turnos se pueden reserva con un máximo de 30 días de anticipación y no en fechas pasadas");
+            throw new BadRequestException("Los turnos se pueden reservar con un máximo de 30 días de anticipación y no en fechas pasadas");
         }
 
         // Validar horario de atención (8 a 16) y duración de 1 hora
         const hora = fechaReserva.getHours();
         const minutos = fechaReserva.getMinutes();
 
-        if (hora < 8 || hora >= 16 || minutos !== 0) {
-            throw new BadRequestException("El horario de atención es de 8 a 16");
+        if (hora < 8 || hora >= 16) {
+            throw new BadRequestException("El horario de atención es de 8 a 16hs")
+        }
+
+        if (minutos !== 0) {
+            throw new BadRequestException("Los turnos duran una hora y deben reservarse en punto. (Ej: 10:00)")
         }
 
         // Verificar que el paciente exista, esté activo y sea rol paciente
