@@ -1,0 +1,492 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>backgw documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+          <script>
+              // --- Iframe navigation tracking for Template Playground ---
+              function sendCurrentUrlToParent() {
+                  if (window.parent && window.parent !== window) {
+                      window.parent.postMessage({
+                          type: 'compodoc-iframe-navigate',
+                          url: window.location.pathname + window.location.hash
+                      }, '*');
+                  }
+              }
+              window.addEventListener('hashchange', sendCurrentUrlToParent, false);
+              window.addEventListener('popstate', sendCurrentUrlToParent, false);
+              window.addEventListener('DOMContentLoaded', sendCurrentUrlToParent, false);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">backgw documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search">
+    <button type="button"
+        class="search-input-clear"
+        aria-label="Clear search"
+        data-search-input-clear>&times;</button>
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content module">
+                   <div class="content-data">
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+    <li class="breadcrumb-item">Modules</li>
+    <li class="breadcrumb-item" >TurnosModule</li>
+</ol>
+
+<div class="io-file io-file-path" data-compodoc="entity-file-path">
+    <span class="icon ion-ios-document" aria-hidden="true"></span>
+    <code>src/modules/turnos/turnos.module.ts</code>
+</div>
+
+<div class="text-center module-graph-container">
+    <div id="module-graph-svg">
+        <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.47.0 (20210316.0004)
+ -->
+<!-- Title: dependencies Pages: 1 -->
+<svg width="504pt" height="284pt"
+ viewBox="0.00 0.00 504.00 284.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 280)">
+<title>dependencies</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-280 500,-280 500,4 -4,4"/>
+<text text-anchor="start" x="227.01" y="-42.4" font-family="Times-12" font-weight="bold" font-size="14.00">Legend</text>
+<polygon fill="#ffffb3" stroke="transparent" points="14,-10 14,-30 34,-30 34,-10 14,-10"/>
+<text text-anchor="start" x="37.63" y="-15.4" font-family="Times-12" font-size="14.00"> &#160;Declarations</text>
+<polygon fill="#8dd3c7" stroke="transparent" points="127,-10 127,-30 147,-30 147,-10 127,-10"/>
+<text text-anchor="start" x="150.73" y="-15.4" font-family="Times-12" font-size="14.00"> &#160;Module</text>
+<polygon fill="#80b1d3" stroke="transparent" points="213,-10 213,-30 233,-30 233,-10 213,-10"/>
+<text text-anchor="start" x="236.78" y="-15.4" font-family="Times-12" font-size="14.00"> &#160;Bootstrap</text>
+<polygon fill="#fdb462" stroke="transparent" points="310,-10 310,-30 330,-30 330,-10 310,-10"/>
+<text text-anchor="start" x="333.67" y="-15.4" font-family="Times-12" font-size="14.00"> &#160;Providers</text>
+<polygon fill="#fb8072" stroke="transparent" points="406,-10 406,-30 426,-30 426,-10 406,-10"/>
+<text text-anchor="start" x="429.73" y="-15.4" font-family="Times-12" font-size="14.00"> &#160;Exports</text>
+<g id="clust1" class="cluster">
+<title>cluster_TurnosModule</title>
+<polygon fill="none" stroke="black" stroke-dasharray="1,5" points="19,-70 19,-268 477,-268 477,-70 19,-70"/>
+</g>
+<g id="clust3" class="cluster">
+<title>cluster_TurnosModule_imports</title>
+<polygon fill="none" stroke="black" points="365,-78 365,-130 469,-130 469,-78 365,-78"/>
+</g>
+<g id="clust4" class="cluster">
+<title>cluster_TurnosModule_exports</title>
+<polygon fill="none" stroke="black" points="147,-208 147,-260 403,-260 403,-208 147,-208"/>
+</g>
+<g id="clust6" class="cluster">
+<title>cluster_TurnosModule_providers</title>
+<polygon fill="none" stroke="black" points="27,-78 27,-130 357,-130 357,-78 27,-78"/>
+</g>
+<!-- AuthModule -->
+<g id="node1" class="node"><a xlink:href="../modules/AuthModule.html" href="../modules/AuthModule.html" target="_top">
+<title>AuthModule</title>
+<polygon fill="#8dd3c7" stroke="black" points="460.55,-122 457.55,-126 436.55,-126 433.55,-122 373.45,-122 373.45,-86 460.55,-86 460.55,-122"/>
+<text text-anchor="middle" x="417" y="-99.8" font-family="Times,serif" font-size="14.00">AuthModule</text>
+</a></g>
+<!-- TurnosModule -->
+<g id="node2" class="node"><a xlink:href="../modules/TurnosModule.html" href="../modules/TurnosModule.html" target="_top">
+<title>TurnosModule</title>
+<polygon fill="#8dd3c7" stroke="black" points="321.71,-187 318.71,-191 297.71,-191 294.71,-187 222.29,-187 222.29,-151 321.71,-151 321.71,-187"/>
+<text text-anchor="middle" x="272" y="-164.8" font-family="Times,serif" font-size="14.00">TurnosModule</text>
+</a></g>
+<!-- AuthModule&#45;&gt;TurnosModule -->
+<g id="edge1" class="edge">
+<title>AuthModule&#45;&gt;TurnosModule</title>
+<path fill="none" stroke="black" d="M383.9,-122.11C383.9,-141.34 383.9,-169 383.9,-169 383.9,-169 331.73,-169 331.73,-169"/>
+<polygon fill="black" stroke="black" points="331.73,-165.5 321.73,-169 331.73,-172.5 331.73,-165.5"/>
+</g>
+<!-- MedicosServices  -->
+<g id="node3" class="node"><a xlink:href="../injectables/MedicosServices.html" href="../injectables/MedicosServices.html" target="_top">
+<title>MedicosServices </title>
+<polygon fill="#fb8072" stroke="black" points="394.63,-252 279.37,-252 279.37,-216 394.63,-216 394.63,-252"/>
+<text text-anchor="middle" x="337" y="-229.8" font-family="Times,serif" font-size="14.00">MedicosServices </text>
+</a></g>
+<!-- TurnosModule&#45;&gt;MedicosServices  -->
+<g id="edge2" class="edge">
+<title>TurnosModule&#45;&gt;MedicosServices </title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M300.52,-187.11C300.52,-187.11 300.52,-205.99 300.52,-205.99"/>
+<polygon fill="black" stroke="black" points="297.02,-205.99 300.52,-215.99 304.02,-205.99 297.02,-205.99"/>
+</g>
+<!-- TurnosServices  -->
+<g id="node4" class="node"><a xlink:href="../injectables/TurnosServices.html" href="../injectables/TurnosServices.html" target="_top">
+<title>TurnosServices </title>
+<polygon fill="#fb8072" stroke="black" points="261.08,-252 154.92,-252 154.92,-216 261.08,-216 261.08,-252"/>
+<text text-anchor="middle" x="208" y="-229.8" font-family="Times,serif" font-size="14.00">TurnosServices </text>
+</a></g>
+<!-- TurnosModule&#45;&gt;TurnosServices  -->
+<g id="edge3" class="edge">
+<title>TurnosModule&#45;&gt;TurnosServices </title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M241.84,-187.11C241.84,-187.11 241.84,-205.99 241.84,-205.99"/>
+<polygon fill="black" stroke="black" points="238.34,-205.99 241.84,-215.99 245.34,-205.99 238.34,-205.99"/>
+</g>
+<!-- MedicosServices -->
+<g id="node5" class="node"><a xlink:href="../injectables/MedicosServices.html" href="../injectables/MedicosServices.html" target="_top">
+<title>MedicosServices</title>
+<ellipse fill="#fdb462" stroke="black" cx="272" cy="-104" rx="77" ry="18"/>
+<text text-anchor="middle" x="272" y="-99.8" font-family="Times,serif" font-size="14.00">MedicosServices</text>
+</a></g>
+<!-- MedicosServices&#45;&gt;TurnosModule -->
+<g id="edge4" class="edge">
+<title>MedicosServices&#45;&gt;TurnosModule</title>
+<path fill="none" stroke="black" d="M272,-122.11C272,-122.11 272,-140.99 272,-140.99"/>
+<polygon fill="black" stroke="black" points="268.5,-140.99 272,-150.99 275.5,-140.99 268.5,-140.99"/>
+</g>
+<!-- TurnosServices -->
+<g id="node6" class="node"><a xlink:href="../injectables/TurnosServices.html" href="../injectables/TurnosServices.html" target="_top">
+<title>TurnosServices</title>
+<ellipse fill="#fdb462" stroke="black" cx="106" cy="-104" rx="71.21" ry="18"/>
+<text text-anchor="middle" x="106" y="-99.8" font-family="Times,serif" font-size="14.00">TurnosServices</text>
+</a></g>
+<!-- TurnosServices&#45;&gt;TurnosModule -->
+<g id="edge5" class="edge">
+<title>TurnosServices&#45;&gt;TurnosModule</title>
+<path fill="none" stroke="black" d="M165.91,-113.87C165.91,-132.06 165.91,-169 165.91,-169 165.91,-169 212.37,-169 212.37,-169"/>
+<polygon fill="black" stroke="black" points="212.37,-172.5 222.37,-169 212.37,-165.5 212.37,-172.5"/>
+</g>
+</g>
+</svg>
+
+    </div>
+    <i id="fullscreen" class="icon ion-ios-resize module-graph-fullscreen-btn" aria-hidden="true"></i>
+    <div class="btn-group size-buttons">
+        <button id="zoom-in" class="btn btn-default btn-sm">Zoom in</button>
+        <button id="reset" class="btn btn-default btn-sm">Reset</button>
+        <button id="zoom-out" class="btn btn-default btn-sm">Zoom out</button>
+    </div>
+</div>
+<script src="../js/libs/svg-pan-zoom.min.js"></script>
+<script src="../js/svg-pan-zoom.controls.js"></script>
+
+<ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item">
+        <a href="#info" 
+            class="nav-link"
+            class="nav-link active"
+            role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+    </li>
+    <li class="nav-item">
+        <a href="#source" 
+            class="nav-link"
+            
+            role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+
+
+
+
+
+        <div class="container-fluid module">
+            <div class="row">
+                <div class="col-sm-3">
+                    <h3>Providers<a href="https://angular.io/api/core/NgModule#providers" target="_blank" rel="noopener noreferrer"
+                            title="Official documentation about module providers"><span class="icon ion-ios-information-circle-outline"></a></h3>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <a href="../injectables/MedicosServices.html">MedicosServices</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="../injectables/TurnosServices.html">TurnosServices</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-sm-3">
+                    <h3>Controllers<a href="https://docs.nestjs.com/controllers" target="_blank" rel="noopener noreferrer"
+                            title="Official documentation about module controllers"><span
+                                class="icon ion-ios-information-circle-outline"></a></h3>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <a href="../controllers/AdministradorController.html">AdministradorController</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="../controllers/MedicosController.html">MedicosController</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="../controllers/PacientesController.html">PacientesController</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-sm-3">
+                    <h3>Imports<a href="https://angular.io/api/core/NgModule#imports" target="_blank" rel="noopener noreferrer"
+                            title="Official documentation about module imports"><span
+                                class="icon ion-ios-information-circle-outline"></a></h3>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <a href="../modules/AuthModule.html">AuthModule</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-sm-3">
+                    <h3>Exports<a href="https://angular.io/api/core/NgModule#exports" target="_blank" rel="noopener noreferrer"
+                            title="Official documentation about module exports"><span
+                                class="icon ion-ios-information-circle-outline"></a></h3>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <a href="../injectables/MedicosServices.html">MedicosServices</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="../injectables/TurnosServices.html">TurnosServices</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+                <section data-compodoc="block-relationships">
+            <h3>Relationships</h3>
+
+            <div class="row pt-3">
+                <div class="col-sm-6">
+                    <h4>Used by</h4>
+                        <ul class="list-unstyled relationships-list">
+                                <li>
+                                            <code><a href="../modules/AppModule.html" target="_self" >AppModule</a></code>
+                                </li>
+                        </ul>
+                </div>
+
+                <div class="col-sm-6">
+                    <h4>Depends on</h4>
+                        <ul class="list-unstyled relationships-list">
+                                <li>
+                                            <code><a href="../modules/AuthModule.html" target="_self" >AuthModule</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="../injectables/MedicosServices.html" target="_self" >MedicosServices</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="../injectables/TurnosServices.html" target="_self" >TurnosServices</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="../controllers/AdministradorController.html" target="_self" >AdministradorController</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="../controllers/MedicosController.html" target="_self" >MedicosController</a></code>
+                                </li>
+                                <li>
+                                            <code><a href="../controllers/PacientesController.html" target="_self" >PacientesController</a></code>
+                                </li>
+                        </ul>
+                </div>
+            </div>
+        </section>
+
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Module } from &#x27;@nestjs/common&#x27;;
+import { TypeOrmModule } from &#x27;@nestjs/typeorm&#x27;;
+import { Medico } from &#x27;./entities/medico.entity.js&#x27;;
+import { Reserva } from &#x27;./entities/reserva.entity.js&#x27;;
+import { AdministradorController } from &#x27;./controllers/administrador.controller.js&#x27;;
+import { MedicosController } from &#x27;./controllers/medicos.controller.js&#x27;;
+import { PacientesController } from &#x27;./controllers/pacientes.controller.js&#x27;;
+import { Usuario } from &#x27;../auth/entities/usuario.entity.js&#x27;;
+import { TurnosServices } from &#x27;./services/turnos.services.js&#x27;;
+import { MedicosServices } from &#x27;./services/medicos.services.js&#x27;;
+import { AuthModule } from &#x27;../auth/auth.module.js&#x27;;
+import { AuthGuard } from &#x27;../auth/guards/auth.guard.js&#x27;;
+
+@Module({
+    imports: [TypeOrmModule.forFeature([Medico, Reserva, Usuario]), AuthModule],
+    controllers: [AdministradorController, MedicosController, PacientesController],
+    providers: [TurnosServices, MedicosServices],
+    exports: [TypeOrmModule, TurnosServices, MedicosServices],
+})
+
+export class TurnosModule { }</code></pre>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'module';
+            var COMPODOC_CURRENT_PAGE_URL = 'TurnosModule.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var updateDarkModeSwitchOffset = function () {
+                    var content = document.querySelector('.content');
+                    var scrollbarWidth = 0;
+
+                    if (content) {
+                         scrollbarWidth = Math.max(0, content.offsetWidth - content.clientWidth);
+                    }
+
+                    document.documentElement.style.setProperty(
+                         '--content-scrollbar-width',
+                         scrollbarWidth + 'px'
+                    );
+               };
+
+               updateDarkModeSwitchOffset();
+               requestAnimationFrame(updateDarkModeSwitchOffset);
+               window.addEventListener('resize', updateDarkModeSwitchOffset);
+
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
