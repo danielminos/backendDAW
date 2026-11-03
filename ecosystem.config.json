@@ -1,0 +1,21 @@
+{
+    "apps": [
+        {
+            "name": "Gestion de Turnos - Clínica Médica",
+            "script": "dist/main.js",
+            "env": {
+                "NODE_ENV": "production",
+                "PORT": 4000,
+                "DB_HOST": "localhost",
+                "DB_PORT": 5433,
+                "DB_USERNAME": "grupoW",
+                "DB_PASSWORD": "DAW_gw2026",
+                "DB_NAME": "clinica",
+                "DB_LOGGING": "false",
+                "SWAGGER_HABILITADO": false,
+                "JWT_SECRET": "NdcIb4sTwOmyIXyeqDXpcEEHeIYVoTivJAqbFE7ZVwM"
+            },
+            "time": true
+        }
+    ]
+}
